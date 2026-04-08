@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home Situations Questionnaire</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FFFEF9;
+    --sand: #EDE8DF;
+    --tan: #D4C9B8;
+    --dark: #2C2416;
+    --accent: #C4622D;
+    --accent-light: #F0D5C5;
+    --text: #3D3025;
+    --muted: #8B7D6B;
+    --radius: 16px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  .shell {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  /* ── Header ── */
+  .header {
+    padding: 44px 0 28px;
+    text-align: center;
+  }
+  .header-badge {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+  }
+  .header h1 {
+    font-family: 'Lora', serif;
+    font-size: clamp(24px, 5vw, 34px);
+    font-weight: 600;
+    color: var(--dark);
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+  .header p {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* ── Intro card ── */
+  .intro-card {
+    background: var(--warm-white);
+    border: 1px solid var(--sand);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    font-size: 14.5px;
+    color: var(--text);
+    line-height: 1.7;
+  }
+  .intro-card p + p { margin-top: 8px; }
+
+  /* ── Info fields ── */
+  .fields-card {
+    background: var(--warm-white);
+    border: 1px solid var(--sand);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-bottom: 28px;
+  }
+  .field-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .field-group.full { grid-template-columns: 1fr; margin-bottom: 0; }
+  .field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .field input {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1.5px solid var(--sand);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--cream);
+    outline: none;
+    transition: border-color .2s;
+  }
+  .field input:focus { border-color: var(--accent); }
+
+  /* ── Section heading ── */
+  .section-heading {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    padding-left: 2px;
+  }
+
+  /* ── Situation card ── */
+  .situation-card {
+    background: var(--warm-white);
+    border: 1.5px solid var(--sand);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    transition: border-color .2s;
+  }
+  .situation-card.answered-no  { border-color: var(--tan); }
+  .situation-card.answered-yes { border-color: var(--accent); background: #FFFAF7; }
+
+  .sit-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .sit-label {
+    font-family: 'Lora', serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--dark);
+    line-height: 1.35;
+    flex: 1;
+  }
+  .yn-row {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .yn-btn {
+    padding: 7px 16px;
+    border: 1.5px solid var(--sand);
+    border-radius: 100px;
+    background: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .yn-btn:hover { border-color: var(--tan); color: var(--text); }
+  .yn-btn.active-no  { background: var(--sand); border-color: var(--tan); color: var(--text); }
+  .yn-btn.active-yes { background: var(--accent); border-color: var(--accent); color: white; }
+
+  /* Severity scale */
+  .severity-wrap {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--sand);
+    display: none;
+  }
+  .severity-wrap.visible { display: block; }
+  .severity-label {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .scale-row {
+    display: flex;
+    gap: 5px;
+  }
+  .scale-btn {
+    flex: 1;
+    padding: 8px 0;
+    border: 1.5px solid var(--sand);
+    border-radius: var(--radius-sm);
+    background: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all .15s;
+    text-align: center;
+  }
+  .scale-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .scale-btn.selected { background: var(--accent); border-color: var(--accent); color: white; }
+  .scale-ends {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* ── Sticky submit bar ── */
+  .submit-bar {
+    position: sticky;
+    bottom: 0;
+    background: var(--cream);
+    border-top: 1px solid var(--sand);
+    padding: 14px 0;
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .submit-progress {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .submit-progress strong { color: var(--text); }
+  .btn {
+    padding: 12px 28px;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all .15s;
+  }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: #ad5226; }
+  .btn-primary:disabled { opacity: .4; cursor: default; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1.5px solid var(--sand);
+  }
+  .btn-ghost:hover { border-color: var(--tan); color: var(--text); }
+
+  /* ── Results ── */
+  .results-section { display: none; }
+  .results-section.visible { display: block; }
+  .form-section.hidden { display: none; }
+
+  .results-header {
+    text-align: center;
+    padding: 36px 0 24px;
+  }
+  .results-header h2 {
+    font-family: 'Lora', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 6px;
+  }
+  .results-header p { font-size: 14px; color: var(--muted); }
+
+  .score-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .score-card {
+    background: var(--warm-white);
+    border: 1px solid var(--sand);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+  }
+  .score-card .val {
+    font-family: 'Lora', serif;
+    font-size: 42px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .score-card .lbl {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+
+  .results-table-wrap {
+    background: var(--warm-white);
+    border: 1px solid var(--sand);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .results-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--muted);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--sand);
+    background: var(--cream);
+  }
+  .results-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--sand);
+    color: var(--text);
+    vertical-align: middle;
+  }
+  .results-table tr:last-child td { border-bottom: none; }
+  .pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+  .pill-no  { background: var(--sand); color: var(--muted); }
+  .pill-yes { background: var(--accent-light); color: var(--accent); }
+  .sev-bar-wrap { display: flex; align-items: center; gap: 8px; }
+  .sev-bar { height: 6px; border-radius: 100px; background: var(--accent); min-width: 4px; }
+  .sev-num { font-size: 13px; font-weight: 500; color: var(--text); }
+
+  .print-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    padding-bottom: 20px;
+  }
+
+  /* ── Print ── */
+  @media print {
+    body { background: white; }
+    .shell { max-width: 100%; padding: 0 24px; }
+    .header { padding: 20px 0; }
+    .submit-bar, .print-row { display: none !important; }
+    .situation-card, .score-card { break-inside: avoid; }
+    .results-section { display: block !important; }
+    .form-section { display: none !important; }
+  }
+
+  @media (max-width: 500px) {
+    .sit-top { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .field-group { grid-template-columns: 1fr; }
+    .score-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <div class="header">
+    <div class="header-badge">For Parents &amp; Caregivers</div>
+    <h1>Home Situations Questionnaire</h1>
+    <p>A brief assessment to help understand your child's behaviour across everyday home situations.</p>
+  </div>
+
+  <!-- Form -->
+  <div class="form-section" id="form-section">
+
+    <div class="intro-card">
+      <p><strong>Instructions:</strong> For each situation below, indicate whether your child presents any problems with compliance to instructions, commands, or rules.</p>
+      <p>If there <em>is</em> a problem, select <strong>Yes</strong> and rate how severe it feels on the 1–9 scale. If there is no problem, select <strong>No</strong>.</p>
+    </div>
+
+    <div class="fields-card">
+      <div class="field-group">
+        <div class="field">
+          <label>Child's initials</label>
+          <input type="text" id="child-name" placeholder="e.g. J.S." maxlength="6" style="text-transform:uppercase;">
+        </div>
+        <div class="field">
+          <label>Your initials</label>
+          <input type="text" id="parent-name" placeholder="e.g. M.D." maxlength="6" style="text-transform:uppercase;">
+        </div>
+      </div>
+      <div class="field-group">
+        <div class="field">
+          <label>Date</label>
+          <input type="date" id="date-field">
+        </div>
+        <div class="field">
+          <label>Time</label>
+          <input type="time" id="time-field">
+        </div>
+      </div>
+    </div>
+
+    <div class="section-heading">15 Situations</div>
+    <div id="situations-list"></div>
+
+    <div class="submit-bar">
+      <div class="submit-progress">
+        <strong id="answered-count">0</strong> of 15 answered
+      </div>
+      <button class="btn btn-primary" id="submit-btn" onclick="showResults()" disabled>View results →</button>
+    </div>
+
+  </div>
+
+  <!-- Results -->
+  <div class="results-section" id="results-section">
+    <div class="results-header">
+      <h2>Results Summary</h2>
+      <p id="results-meta"></p>
+    </div>
+
+    <div class="score-grid">
+      <div class="score-card">
+        <div class="val" id="res-count">0</div>
+        <div class="lbl">Problem situations</div>
+      </div>
+      <div class="score-card">
+        <div class="val" id="res-mean">—</div>
+        <div class="lbl">Mean severity score</div>
+      </div>
+    </div>
+
+    <div class="results-table-wrap">
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Situation</th>
+            <th>Problem?</th>
+            <th>Severity</th>
+          </tr>
+        </thead>
+        <tbody id="results-body"></tbody>
+      </table>
+    </div>
+
+    <div class="print-row">
+      <button class="btn btn-ghost" onclick="restart()">← Start over</button>
+      <button class="btn btn-primary" onclick="window.print()">Print / Save PDF</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SITUATIONS = [
+  "While playing alone",
+  "While playing with other children",
+  "At mealtimes",
+  "Getting dressed/undressed",
+  "Washing and bathing",
+  "When you are on the telephone",
+  "When visitors are in your home",
+  "When visiting someone's home",
+  "In public places (e.g., restaurants, stores, churches)",
+  "When other parent is home",
+  "When asked to do chores",
+  "When asked to do homework",
+  "At bedtime",
+  "While in the car",
+  "When with a babysitter"
+];
+
+let answers = SITUATIONS.map(() => ({ yn: null, sev: null }));
+
+// Build all situation cards
+const list = document.getElementById('situations-list');
+SITUATIONS.forEach((sit, i) => {
+  const card = document.createElement('div');
+  card.className = 'situation-card';
+  card.id = `card-${i}`;
+  card.innerHTML = `
+    <div class="sit-top">
+      <div class="sit-label">${sit}</div>
+      <div class="yn-row">
+        <button class="yn-btn" id="btn-no-${i}" onclick="setYN(${i},'no')">No</button>
+        <button class="yn-btn" id="btn-yes-${i}" onclick="setYN(${i},'yes')">Yes</button>
+      </div>
+    </div>
+    <div class="severity-wrap" id="sev-wrap-${i}">
+      <div class="severity-label">How severe is this problem? (1 = mild · 9 = severe)</div>
+      <div class="scale-row">
+        ${[1,2,3,4,5,6,7,8,9].map(n =>
+          `<button class="scale-btn" id="sev-${i}-${n}" onclick="setSev(${i},${n})">${n}</button>`
+        ).join('')}
+      </div>
+      <div class="scale-ends"><span>Mild</span><span>Severe</span></div>
+    </div>
+  `;
+  list.appendChild(card);
+});
+
+// Default date and time to now
+const now = new Date();
+document.getElementById('date-field').value = now.toISOString().split('T')[0];
+document.getElementById('time-field').value = now.toTimeString().slice(0,5);
+
+function setYN(i, val) {
+  answers[i].yn = val;
+  if (val === 'no') {
+    answers[i].sev = null;
+    [1,2,3,4,5,6,7,8,9].forEach(n =>
+      document.getElementById(`sev-${i}-${n}`).classList.remove('selected')
+    );
+  }
+  document.getElementById(`btn-no-${i}`).className  = 'yn-btn' + (val === 'no'  ? ' active-no'  : '');
+  document.getElementById(`btn-yes-${i}`).className = 'yn-btn' + (val === 'yes' ? ' active-yes' : '');
+  document.getElementById(`card-${i}`).className = 'situation-card ' + (val === 'yes' ? 'answered-yes' : 'answered-no');
+  document.getElementById(`sev-wrap-${i}`).className = 'severity-wrap' + (val === 'yes' ? ' visible' : '');
+  updateSubmitBar();
+}
+
+function setSev(i, val) {
+  answers[i].sev = val;
+  [1,2,3,4,5,6,7,8,9].forEach(n =>
+    document.getElementById(`sev-${i}-${n}`).className = 'scale-btn' + (n === val ? ' selected' : '')
+  );
+  updateSubmitBar();
+}
+
+function updateSubmitBar() {
+  const answered = answers.filter(a => a.yn !== null).length;
+  document.getElementById('answered-count').textContent = answered;
+  const allDone = answers.every(a => a.yn === 'no' || (a.yn === 'yes' && a.sev !== null));
+  document.getElementById('submit-btn').disabled = !allDone;
+}
+
+function showResults() {
+  const childName  = document.getElementById('child-name').value.toUpperCase() || '—';
+  const parentName = document.getElementById('parent-name').value.toUpperCase() || '';
+  const dateVal    = document.getElementById('date-field').value;
+  const timeVal    = document.getElementById('time-field').value;
+
+  const problems  = answers.filter(a => a.yn === 'yes');
+  const count     = problems.length;
+  const sevScores = problems.filter(a => a.sev !== null).map(a => a.sev);
+  const mean      = sevScores.length
+    ? (sevScores.reduce((s, v) => s + v, 0) / sevScores.length).toFixed(2)
+    : '—';
+
+  document.getElementById('res-count').textContent = count;
+  document.getElementById('res-mean').textContent  = mean;
+
+  let meta = `Child: ${childName}`;
+  if (dateVal) {
+    let dateStr = new Date(dateVal + 'T12:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    if (timeVal) {
+      const [h, m] = timeVal.split(':');
+      const hr = parseInt(h);
+      dateStr += ` at ${hr % 12 || 12}:${m} ${hr < 12 ? 'AM' : 'PM'}`;
+    }
+    meta += ` · ${dateStr}`;
+  }
+  if (parentName) meta += ` · Completed by ${parentName}`;
+  document.getElementById('results-meta').textContent = meta;
+
+  document.getElementById('results-body').innerHTML = answers.map((a, i) => {
+    const isYes = a.yn === 'yes';
+    const barWidth = isYes && a.sev ? Math.round((a.sev / 9) * 80) : 0;
+    return `<tr>
+      <td>${SITUATIONS[i]}</td>
+      <td><span class="pill ${isYes ? 'pill-yes' : 'pill-no'}">${isYes ? 'Yes' : 'No'}</span></td>
+      <td>${isYes && a.sev
+        ? `<div class="sev-bar-wrap"><div class="sev-bar" style="width:${barWidth}px"></div><span class="sev-num">${a.sev}</span></div>`
+        : '<span style="color:var(--muted);font-size:13px;">—</span>'}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('form-section').classList.add('hidden');
+  document.getElementById('results-section').classList.add('visible');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function restart() {
+  answers = SITUATIONS.map(() => ({ yn: null, sev: null }));
+  SITUATIONS.forEach((_, i) => {
+    document.getElementById(`card-${i}`).className = 'situation-card';
+    document.getElementById(`btn-no-${i}`).className  = 'yn-btn';
+    document.getElementById(`btn-yes-${i}`).className = 'yn-btn';
+    document.getElementById(`sev-wrap-${i}`).className = 'severity-wrap';
+    [1,2,3,4,5,6,7,8,9].forEach(n =>
+      document.getElementById(`sev-${i}-${n}`).classList.remove('selected')
+    );
+  });
+  document.getElementById('answered-count').textContent = '0';
+  document.getElementById('submit-btn').disabled = true;
+  document.getElementById('form-section').classList.remove('hidden');
+  document.getElementById('results-section').classList.remove('visible');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
